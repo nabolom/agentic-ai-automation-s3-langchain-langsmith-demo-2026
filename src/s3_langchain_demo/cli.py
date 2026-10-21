@@ -74,6 +74,15 @@ def main(argv: list[str] | None = None) -> int:
     except (RuntimeError, ValueError, FileNotFoundError) as exc:
         print(f"BLOQUEADO: {exc}", file=sys.stderr)
         return 2
+    except Exception as exc:
+        if args.command == "live":
+            print(
+                "BLOQUEADO: la corrida live falló "
+                f"({type(exc).__name__}). Usa offline o revisa tu configuración local.",
+                file=sys.stderr,
+            )
+            return 2
+        raise
 
 
 if __name__ == "__main__":

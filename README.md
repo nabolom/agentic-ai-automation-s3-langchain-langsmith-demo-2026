@@ -51,6 +51,8 @@ Requiere dos credenciales separadas:
 
 No son la misma cosa que el acceso de Claude Code. Cárgalas únicamente en variables de entorno o en un `.env` local que permanece fuera de Git.
 
+Los scripts `create_dataset.py` y `run_langsmith_eval.py` cargan automáticamente el `.env` ubicado en la raíz del repo. La corrida live se registra, cuando el tracing está activado, dentro de la trace de aplicación `s3.classify_live`, que conserva la salida cruda y el resultado del checker.
+
 ```bash
 cp .env.example .env
 # Edita .env solo en tu equipo; no lo subas.
