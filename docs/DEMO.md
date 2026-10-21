@@ -27,6 +27,8 @@ Pregunta:
 
 No empieces por la puntuación. Primero reconstruye la operación.
 
+La corrida debe aparecer dentro de la trace de aplicación `s3.classify_live`. En su salida busca la decisión cruda y el resultado del checker; la llamada de LangChain al modelo debe quedar como paso anidado cuando el tracing esté activado.
+
 ## 3. Caso fallido — 5 minutos
 
 Ejecuta `E3`, `E5` o `E6` con `v0`.

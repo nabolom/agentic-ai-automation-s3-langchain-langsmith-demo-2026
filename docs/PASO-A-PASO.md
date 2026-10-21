@@ -88,7 +88,6 @@ ANTHROPIC_MODEL=claude-haiku-4-5-20251001
 LANGSMITH_TRACING=true
 LANGSMITH_API_KEY=tu_clave_local_de_langsmith
 LANGSMITH_PROJECT=s3-demo-triage-live
-S3_DEMO_MODE=live
 ```
 
 El archivo `.env` está ignorado por Git. Confirma que Git no lo ve:
@@ -190,10 +189,20 @@ cd agentic-ai-automation-s3-langchain-langsmith-demo-2026
 
 ```bash
 python -m venv .venv
-# activa el entorno según tu sistema
+# macOS/Linux
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
 python -m pip install -e .
 python -m unittest discover -s tests -v
 python -m s3_langchain_demo offline --version v0
+```
+
+Si Windows bloquea la activación, no cambies políticas globales. Ejecuta directamente:
+
+```powershell
+.venv\Scripts\python.exe -m pip install -e .
+.venv\Scripts\python.exe -m unittest discover -s tests -v
+.venv\Scripts\python.exe -m s3_langchain_demo offline --version v0
 ```
 
 ### Paso 4. Decide si necesitas live

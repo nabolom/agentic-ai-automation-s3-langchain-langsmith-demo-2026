@@ -10,7 +10,10 @@ import argparse
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT / ".env")
 sys.path.insert(0, str(ROOT / "src"))
 
 from s3_langchain_demo.evaluator import score_decision  # noqa: E402
@@ -50,16 +53,24 @@ def main() -> int:
             ),
         }
 
-    client = Client()
-    results = client.evaluate(
-        target,
-        data=DATASET_NAME,
-        evaluators=[evaluator],
-        experiment_prefix=f"s3-demo-{args.version}",
-        max_concurrency=1,
-    )
-    print(results)
-    return 0
+    try:
+        client = Client()
+        results = client.evaluate(
+            target,
+            data=DATASET_NAME,
+            evaluators=[evaluator],
+            experiment_prefix=f"s3-demo-{args.version}",
+            max_concurrency=1,
+        )
+        print(results)
+        return 0
+    except Exception as exc:
+        print(
+            "BLOQUEADO: la evaluación LangSmith falló "
+            f"({type(exc).__name__}). Usa offline o revisa tu configuración local.",
+            file=sys.stderr,
+        )
+        return 2
 
 
 if __name__ == "__main__":
