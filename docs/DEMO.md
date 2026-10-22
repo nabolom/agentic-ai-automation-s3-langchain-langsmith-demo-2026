@@ -84,3 +84,32 @@ Di:
 > “La trace explica una corrida. La evaluación compara varias. El loop solo aparece si hay una segunda vuelta real, una señal de progreso, un presupuesto, una detección de no-progreso y un escalamiento.”
 
 Conecta con las estaciones A–E del deck de S3.
+
+## 8. Caso principal de S3: correo iterativo v0–v4
+
+Para mostrar cómo la evidencia cambia el sistema, usa el caso de correos por audiencia de `docs/EMAIL-LOOP-FACILITADOR.md`.
+
+La secuencia recomendada es:
+
+```bash
+python scripts/run_email_loop.py --mode offline --version all
+python scripts/run_email_loop.py --mode offline --version v3 --case M6 --json
+python scripts/run_email_loop.py --mode offline --version v4 --case M6 --json
+```
+
+Explica la progresión en voz alta:
+
+- `v0`: generación general;
+- `v1`: política por audiencia;
+- `v2`: contrato y checker;
+- `v3`: una corrección dirigida;
+- `v4`: hasta dos vueltas, no-progreso y escalamiento.
+
+La misma suite de seis casos se conserva en todas las versiones. La comparación debe mirar cada correo, no únicamente el porcentaje. En live, limita la demostración a un caso v0 y uno v4 con datos sintéticos:
+
+```bash
+python scripts/run_email_loop.py --mode live --version v0 --case M2
+python scripts/run_email_loop.py --mode live --version v4 --case M6
+```
+
+El resultado siempre es un borrador. No se conecta ningún buzón ni se envía correo.
