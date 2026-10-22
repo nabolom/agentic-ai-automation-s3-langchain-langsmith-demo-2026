@@ -2,14 +2,15 @@
 
 Repositorio didáctico independiente del Mentor para la Sesión 3 de **Agentic AI Automation 2026**.
 
-La demo usa un caso sintético de **clasificar y rutear solicitudes**. El objetivo no es construir un agente grande. Es aprender a:
+La demo usa dos casos sintéticos relacionados. El primero clasifica y rutea solicitudes. El segundo genera borradores de correo para una audiencia concreta y los mejora de `v0` a `v4` con un loop acotado. El objetivo no es construir un agente grande. Es aprender a:
 
 1. distinguir workflow, agente, retry y loop;
 2. observar una corrida con LangSmith;
 3. convertir casos en un dataset evaluable;
 4. usar un checker determinista antes de introducir un LLM-as-judge;
 5. comparar `v0 → un cambio → v1` sobre los mismos casos;
-6. decidir si hace falta un loop o basta un flujo con verificación y escalamiento humano.
+6. decidir si hace falta un loop o basta un flujo con verificación y escalamiento humano;
+7. observar cómo una suite de casos límite guía iteraciones de un mismo correo.
 
 ## Importante: no toca los repositorios del curso
 
@@ -66,7 +67,37 @@ Para enviar traces a un proyecto propio de LangSmith, usa en `.env`:
 ```text
 LANGSMITH_TRACING=true
 LANGSMITH_PROJECT=s3-demo-triage-live
+LANGSMITH_EMAIL_LOOP_PROJECT=s3-demo-email-loop-live
 ```
+
+## Demo central: correo iterativo v0 → v4
+
+La demo nueva vive en `examples/iterative-email-loop/` y usa LangGraph para hacer visible el estado del loop:
+
+```text
+generate → check → revise → check → finish
+```
+
+Las cinco versiones corren sobre los mismos seis correos sintéticos:
+
+```bash
+python scripts/run_email_loop.py --mode offline --version all
+python scripts/run_email_loop.py --mode offline --version v4 --case M6 --json
+```
+
+`v0` genera un borrador general. `v1` conoce la audiencia. `v2` añade contrato y checker. `v3` corrige una vez. `v4` permite hasta dos vueltas, detecta no-progreso y escala por riesgo. El correo nunca se envía.
+
+Para LangSmith:
+
+```bash
+python scripts/create_email_dataset.py
+python scripts/run_email_langsmith_eval.py --version v0
+python scripts/run_email_langsmith_eval.py --version v4
+```
+
+La conexión live usa únicamente LangChain, LangGraph, Anthropic y LangSmith. No se conectan Gmail, Outlook, CRM ni buzones.
+
+Consulta `docs/EMAIL-LOOP.md` y `docs/EMAIL-LOOP-FACILITADOR.md` para la explicación de clase.
 
 ## Recorrido pedagógico sugerido
 
@@ -84,13 +115,20 @@ LANGSMITH_PROJECT=s3-demo-triage-live
 
 ```text
 data/cases.json                 seis casos sintéticos
+data/email_cases.json           seis correos sintéticos por audiencia
 src/s3_langchain_demo/           código ejecutable
+src/s3_langchain_demo/email_loop.py  grafo y checker v0–v4
 scripts/create_dataset.py        crea dataset en LangSmith
 scripts/run_langsmith_eval.py   corre evaluación live
 scripts/compare_offline.py      compara fixtures offline
+scripts/run_email_loop.py       corre el ejemplo de correo
+scripts/create_email_dataset.py crea dataset de correo
+scripts/run_email_langsmith_eval.py evalúa v0/v4 en LangSmith
 docs/CONCEPTOS.md                explicación no técnica
 docs/DEMO.md                     guion de la demo
 docs/PASO-A-PASO.md              recorrido del facilitador
+docs/EMAIL-LOOP.md               explicación del caso iterativo
+docs/EMAIL-LOOP-FACILITADOR.md   guion específico del bloque
 
 tests/                           pruebas sin red ni credenciales
 ```
